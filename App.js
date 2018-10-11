@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, TextInput } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Button } from 'react-native';
 
 export default class App extends React.Component {
 
@@ -14,14 +14,30 @@ export default class App extends React.Component {
     });
   };
 
+  addPlaceNameHandler = () => {
+    alert(this.state.placeName);
+    this.setState({
+      placeName: ""
+    });
+  };
+
+
   render() {
     return (
       <View style={styles.container}>
-        <TextInput
-          style={{ width: 300, borderColor: 'black', borderWidth: 1}}
-          placeholder= "An awasome place"
-          value={this.state.placeName}
-          onChangeText={this.placeNameChangedHandler}/>
+
+        <View style={styles.inputContainer}>
+          <TextInput
+            placeholder="An awasome place"
+            value={this.state.placeName}
+            onChangeText={this.placeNameChangedHandler} 
+            style={styles.placeInput}/>
+
+          <Button
+            title="Add"
+            onPress={this.addPlaceNameHandler} 
+            style={styles.placeButton}/>
+        </View>
       </View>
     );
   }
@@ -29,10 +45,23 @@ export default class App extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    //flex: 1,
+    flex: 1,
     padding: 40,
     backgroundColor: '#fff',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
+  },
+  inputContainer: {
+    //flex: 1,
+    width: "100%",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  placeInput: {
+    width: "70%"
+  },
+  placeButton: {
+    width: "30%"
   },
 });
