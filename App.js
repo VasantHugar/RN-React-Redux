@@ -4,36 +4,23 @@ import { StyleSheet, Text, View, TextInput, Button } from 'react-native';
 import PlaceInput from './src/components/PlaceInput/PlaceInput';
 import PlaceList from './src/components/PlaceList/PlaceList';
 import placeImage from './src/assets/yoga-1.png'
-import mysorePalace from './src/assets/mysore_palace.jpg'
 
-export default class App extends React.Component {
+import { Provider, connect } from 'react-redux';
+import { addPlace, deletePlace } from './src/store/actions/index';
+import configureStore from './src/store/configureStore';
+
+class App extends React.Component {
 
   state = {
     places: []
   };
 
   placeAddedHandler = placeName => {
-
-    this.setState(prevState => {
-      return {
-        places: prevState.places.concat({
-          key: "" + Math.random(),
-          name: placeName,
-          image: mysorePalace
-        })
-      };
-    });
+    this.props.onAddPlace(placeName);
   };
 
   placeDeleteHandler = key => {
-
-    this.setState(prevState => {
-      return {
-        places: prevState.places.filter(place => {
-          return place.key !== key;
-        })
-      };
-    });
+    this.props.onDeletePlace(key);
   };
 
   render() {
@@ -41,7 +28,7 @@ export default class App extends React.Component {
     return (
       <View style={styles.container}>
         <PlaceInput onPlaceAdded={this.placeAddedHandler} />
-        <PlaceList places={this.state.places} onItemDeleted={this.placeDeleteHandler} />
+        <PlaceList places={this.props.places} onItemDeleted={this.placeDeleteHandler} />
       </View>
     );
   }
@@ -56,3 +43,29 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   }
 });
+
+const mapStateToProps = state => {
+  return {
+    places: state.places.places,
+  };
+}
+
+const mapDispatchToProps = dispatch => {
+
+  return {
+    onAddPlace: (name) => dispatch(addPlace(name)),
+    onDeletePlace: (key) => dispatch(deletePlace(key))
+  }
+}
+
+const ConnectedAppScreen = connect(mapStateToProps, mapDispatchToProps)(App);
+
+export default class RootComponent extends React.Component {
+  render() {
+    return (
+      <Provider store={configureStore()}>
+        <ConnectedAppScreen />
+      </Provider>
+    );
+  }
+}
